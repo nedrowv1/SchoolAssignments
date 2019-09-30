@@ -70,9 +70,9 @@ def move_towers(key_1, key_2, strt_disks, air):
 
 FLAG = randint(1, 2)
 if FLAG = 1:
-    TYPE = "recursive"
+    TYPE = "recursively"
 else:
-    TYPE = "iterative"
+    TYPE = "iteratively"
 print(r"______________________________________________________________"
       "\n"
       r"                                                            "
