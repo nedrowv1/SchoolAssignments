@@ -1,5 +1,4 @@
-from time import sleep
-from textwrap import wrap
+from towers_of_hanoi_join import move_towers
 
 def move_disk(disk1, disk2, pillar1, pillar2, start_hgt, air):
     """determine if, and in what direction, a disk can move"""
