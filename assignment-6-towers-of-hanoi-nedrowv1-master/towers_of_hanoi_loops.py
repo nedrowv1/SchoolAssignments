@@ -10,8 +10,8 @@ from textwrap import wrap
 def define_pillar_row(pillar, disk_index, ttl_disks, endchar):
     """calculate the amount of white space needed to keep rows aligned"""
     if len(pillar) > disk_index:
-        # buffer = " " * (ttl_disks - len(pillar[disk_index]))
-        print_disk = pillar[disk_index].center(ttl_disks)  # + buffer
+        buffer = " " * (ttl_disks - len(pillar[disk_index]))
+        print_disk = pillar[disk_index]  + buffer
     else:
         print_disk = ' ' * ttl_disks
     print(print_disk, end=endchar)
@@ -27,7 +27,7 @@ def print_pillar(disks, pillar_1, pillar_2, pillar_3):
     sleep(3)
 
 
-def move_towers(key_1, key_2, strt_disks):
+def move_towers(key_1, key_2, strt_disks, air):
     """inserts, pops and prints the movement of the top disk of a given pillar
     to the top of another"""
     # global variable used for manipulation of lists - because otherwise
@@ -54,16 +54,28 @@ def move_towers(key_1, key_2, strt_disks):
     else:
         raise ValueError("The value passed in key_2 is invalid")
     # move first item from move from tower and put in first place of drop to tower
-    drop_tower.insert(0, move_tower.pop(0))
+    for i, value in enumerate(move_tower):
+        if value != air:
+            move_disk = value
+            move_tower[i] = air
+            break
+    for i, value in enumerate(drop_tower):
+        if value != air:
+            drop_tower[i-1] = move_disk
+            break
+        elif i == len(drop_tower) -1:
+            drop_tower[i] = move_disk
+            break           
+                    
     print_pillar(strt_disks, START, MID, END)
 
 
-def move_disk(disk1, disk2, pillar1, pillar2, start_hgt):
+def move_disk(disk1, disk2, pillar1, pillar2, start_hgt, air):
     """determine if, and in what direction, a disk can move"""
     if (disk1 < disk2 or disk2 == 0) and disk1 != 0:
-        move_towers(pillar1, pillar2, start_hgt)
+        move_towers(pillar1, pillar2, start_hgt, air)
     elif (disk2 < disk1 or disk1 == 0) and disk2 != 0:
-        move_towers(pillar2, pillar1, start_hgt)
+        move_towers(pillar2, pillar1, start_hgt, air)
 
 
 def towers_of_hanoi(start_hgt, mod1, strt, mid, end):
@@ -73,28 +85,36 @@ def towers_of_hanoi(start_hgt, mod1, strt, mid, end):
     tot_moves = (2 ** start_hgt) - 1  # so big...so fast
     moves = 0
     mod2 = 3 - mod1  # the pillar for the second and all even numbered moves
+    disk_a = disk_b = disk_c = 0
+    air = start_hgt * " "
     while moves <= tot_moves:
-        if strt:
-            disk_a = len(strt[0])
-        else:
-            disk_a = 0
-        if mid:
-            disk_b = len(mid[0])
-        else:
-            disk_b = 0
-        if end:
-            disk_c = len(end[0])
-        else:
-            disk_c = 0
-
+        a = b= c= False
+        for disk in strt:
+            if disk != air:
+                disk_a = len(disk)
+                a = True
+                break
+        if not a: disk_a = 0
+        for disk in mid:
+            if disk != air:
+                disk_b = len(disk)
+                b = True
+                break
+        if not b: disk_b = 0
+        for disk in end:
+            if disk != air:
+                disk_c = len(disk)
+                c = True
+                break
+        if not c: disk_c = 0
         if moves % 3 == mod1:
-            move_disk(disk_a, disk_b, 1, 2, start_hgt)
+            move_disk(disk_a, disk_b, 1, 2, start_hgt, air)
 
         elif moves % 3 == mod2:
-            move_disk(disk_a, disk_c, 1, 3, start_hgt)
+            move_disk(disk_a, disk_c, 1, 3, start_hgt, air)
 
         else:
-            move_disk(disk_b, disk_c, 2, 3, start_hgt)
+            move_disk(disk_b, disk_c, 2, 3, start_hgt, air)
 
         moves += 1
 
@@ -133,7 +153,7 @@ print(r"______________________________________________________________"
       "\n"
       r"                              --programmed iteratively"
       "\n")
-sleep(2)
+#sleep(2)
 
 QUOTE = wrap("It's been very lonely here at the monastery since the monks all "
              "left. Today, I went to the neglected Tower of Hanoi. I was "
@@ -146,7 +166,7 @@ QUOTE = wrap("It's been very lonely here at the monastery since the monks all "
 for line in QUOTE:
     print(line)
 print("\n--Anonymous, Demon Magazine")
-sleep(10)
+#sleep(10)
 print()
 print()
 MOVES_TO_END_OF_WORLD = (2 ** 64) - 1
@@ -161,13 +181,13 @@ INTRO = wrap("Legend says that when the monks in Tibet finish moving 64 "
 for line in INTRO:
     print(line)
 print()
-sleep(6)
+#sleep(6)
 INTRO = wrap("I don't suggest you try 64 disks here.  It'll take three times "
              "as long.  But try out a smaller number, and see if you can "
              "guess the next move!")
 for line in INTRO:
     print(line)
-sleep(2)
+#sleep(2)
 START_HEIGHT = int(input("Enter the height of your tower\n>>>"))
 if START_HEIGHT == 64:
     print("Don't say I didn't warn you!")
@@ -192,18 +212,19 @@ if STOP_VALUE == "days" and STOP_TIME >= 365:
 print("This will take {:,} moves and "
       "about {:,} {:<7s}".format((2**START_HEIGHT)-1, STOP_TIME, STOP_VALUE))
 
-sleep(3)
+#sleep(3)
 print("Starting in 3...")
-sleep(3)
+#sleep(3)
 print("2...")
-sleep(2)
+#sleep(2)
 print("1...")
-sleep(1)
+#sleep(1)
 
 # populate first list with discs
 for CREATE_DISK in range(START_HEIGHT):
     START.append((CREATE_DISK + 1) * '-')
-
+    MID.append(START_HEIGHT * ' ')
+    END.append(START_HEIGHT * ' ')  
 # print starting sequence to screen
 for DISK in range(START_HEIGHT):
     FILLER = " " * (START_HEIGHT - len(START[DISK]))
@@ -224,3 +245,4 @@ towers_of_hanoi(START_HEIGHT, MOD3_1, START, MID, END)
 # from the bottom of the grid. Wouldn't be hard to fill a queue with empty
 # strings and then pop one as you append a disk. Would you have been able to
 # reduce your codebase by importing functions from one file into the other?
+
