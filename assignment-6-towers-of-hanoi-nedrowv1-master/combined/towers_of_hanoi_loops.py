@@ -1,11 +1,18 @@
-from towers_of_hanoi_join import move_towers
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Sep 30 14:51:21 2019
 
-def move_disk(disk1, disk2, pillar1, pillar2, start_hgt, air):
+@author: vnedrow
+"""
+
+from towers_of_hanoi_joint import move_towers
+
+def move_disk(disk1, disk2, pillar1, pillar2, start_hgt, air, strt, mid, end):
     """determine if, and in what direction, a disk can move"""
     if (disk1 < disk2 or disk2 == 0) and disk1 != 0:
-        move_towers(pillar1, pillar2, start_hgt, air)
+        move_towers(pillar1, pillar2, start_hgt, air, strt, mid, end)
     elif (disk2 < disk1 or disk1 == 0) and disk2 != 0:
-        move_towers(pillar2, pillar1, start_hgt, air)
+        move_towers(pillar2, pillar1, start_hgt, air, strt, mid, end)
         
 def towers_of_hanoi(start_hgt, mod1, strt, mid, end):
     """iterative method of moving the towers of hanoi.  won't hit
@@ -37,12 +44,12 @@ def towers_of_hanoi(start_hgt, mod1, strt, mid, end):
                 break
         if not c: disk_c = 0
         if moves % 3 == mod1:
-            move_disk(disk_a, disk_b, 1, 2, start_hgt, air)
+            move_disk(disk_a, disk_b, 1, 2, start_hgt, air, strt, mid, end)
 
         elif moves % 3 == mod2:
-            move_disk(disk_a, disk_c, 1, 3, start_hgt, air)
+            move_disk(disk_a, disk_c, 1, 3, start_hgt, air, strt, mid, end)
 
         else:
-            move_disk(disk_b, disk_c, 2, 3, start_hgt, air)
+            move_disk(disk_b, disk_c, 2, 3, start_hgt, air, strt, mid, end)
 
         moves += 1
