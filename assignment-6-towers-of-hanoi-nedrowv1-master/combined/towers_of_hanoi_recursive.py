@@ -1,3 +1,5 @@
+from towers_of_hanoi_joint import move_towers
+
 def towers_of_hanoi(tower1, tower3, tower2, num_disks, tot_disks):
     """for each disk in n- 1 disks, move disks from pillar 1 to pillar 2, 
     and then from pillar 2 to pillar3"""
